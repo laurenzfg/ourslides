@@ -1,1 +1,10 @@
-{}
+{
+  "auth": {
+    "ourslidesdfa5687e": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
