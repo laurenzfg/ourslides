@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
+import Amplify, { Auth } from 'aws-amplify';
+import awsconfig from './aws-exports';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -21,3 +23,38 @@ serviceWorkerRegistration.unregister();
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+// Let's boot up our AWS Amplify lib
+// Set the redirect URI for OAuth Flows according to localhost or prod deployment
+const isLocalhost = Boolean(
+  window.location.hostname === "localhost" ||
+    // [::1] is the IPv6 localhost address.
+    window.location.hostname === "[::1]" ||
+    // 127.0.0.1/8 is considered localhost for IPv4.
+    window.location.hostname.match(
+      /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+    )
+);
+
+// Get the redirect URIs for dev and prod from config
+const [
+  productionRedirectSignIn,
+  localRedirectSignIn,
+] = awsconfig.oauth.redirectSignIn.split(",");
+
+const [
+  productionRedirectSignOut,
+  localRedirectSignOut,
+] = awsconfig.oauth.redirectSignOut.split(",");
+
+// set the right redirect URI
+const updatedAwsConfig = {
+  ...awsconfig,
+  oauth: {
+    ...awsconfig.oauth,
+    redirectSignIn: isLocalhost ? localRedirectSignIn : productionRedirectSignIn,
+    redirectSignOut: isLocalhost ? localRedirectSignOut : productionRedirectSignOut,
+  }
+}
+
+Amplify.configure(updatedAwsConfig);
