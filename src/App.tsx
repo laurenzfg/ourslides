@@ -2,6 +2,7 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import { AppBar, Container, CssBaseline, makeStyles, ThemeProvider, Toolbar, Typography } from '@material-ui/core';
 import SignIn from './Components/SignIn';
+import { withAuthenticator } from '@aws-amplify/ui-react';
 
 // Created with material.io: https://material.io/resources/color/#!/?view.left=0&view.right=0&primary.color=283593&secondary.color=1E88E5&primary.text.color=ffffff
 const theme = createMuiTheme({
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme: any) => ({
   appBarSpacer: theme.mixins.toolbar,
 }));
 
-function App() {
+const  App = () => {
   const classes = useStyles();
 
   return (
@@ -50,4 +51,4 @@ function App() {
   );
 }
 
-export default App;
+export default withAuthenticator(App);
