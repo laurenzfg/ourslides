@@ -14,6 +14,9 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import FooterTextComponent from './FooterTextComponent';
+import { Auth } from 'aws-amplify';
+import { updatedAwsConfig } from '../index'
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -41,6 +44,16 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
   const classes = useStyles();
 
+  const { 
+    domain,  
+    redirectSignIn, 
+    redirectSignOut,
+    responseType } = updatedAwsConfig.oauth;
+  const clientId = updatedAwsConfig.aws_user_pools_web_client_id;
+  
+  const url_to_google = 'https://' + domain + '/oauth2/authorize?redirect_uri=' + redirectSignIn + '&response_type=' + responseType + '&client_id=' + clientId + '&identity_provider=Google';
+  const url_to_facebook = 'https://' + domain + '/oauth2/authorize?redirect_uri=' + redirectSignIn + '&response_type=' + responseType + '&client_id=' + clientId + '&identity_provider=Facebook';
+
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
@@ -50,7 +63,9 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-
+        <Link href={url_to_facebook}>Open Facebook</Link>
+        <Link href={url_to_google}>Open Google</Link>
+        <button onClick={() => Auth.signOut()}>Sign Out</button>
         <Avatar className={classes.avatar}>
           <LockOpenOutlinedIcon />
         </Avatar>
