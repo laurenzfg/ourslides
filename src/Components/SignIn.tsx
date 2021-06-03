@@ -64,7 +64,7 @@ export default function SignIn() {
           Sign in
         </Typography>
         <FacebookLoginButton onClick={() => { window.location.assign(url_to_facebook) }}></FacebookLoginButton>
-        <GoogleLoginButton onClick={() => { window.location.assign(url_to_facebook) }}></GoogleLoginButton>
+        <GoogleLoginButton onClick={() => { window.location.assign(url_to_google) }}></GoogleLoginButton>
         <button onClick={() => Auth.signOut()}>Sign Out</button>
         <Avatar className={classes.avatar}>
           <LockOpenOutlinedIcon />
