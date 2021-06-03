@@ -16,6 +16,7 @@ import Container from '@material-ui/core/Container';
 import FooterTextComponent from './FooterTextComponent';
 import { Auth } from 'aws-amplify';
 import { updatedAwsConfig } from '../index'
+import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -47,7 +48,6 @@ export default function SignIn() {
   const { 
     domain,  
     redirectSignIn, 
-    redirectSignOut,
     responseType } = updatedAwsConfig.oauth;
   const clientId = updatedAwsConfig.aws_user_pools_web_client_id;
   
@@ -63,8 +63,8 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Link href={url_to_facebook}>Open Facebook</Link>
-        <Link href={url_to_google}>Open Google</Link>
+        <FacebookLoginButton onClick={() => { window.location.assign(url_to_facebook) }}></FacebookLoginButton>
+        <GoogleLoginButton onClick={() => { window.location.assign(url_to_facebook) }}></GoogleLoginButton>
         <button onClick={() => Auth.signOut()}>Sign Out</button>
         <Avatar className={classes.avatar}>
           <LockOpenOutlinedIcon />

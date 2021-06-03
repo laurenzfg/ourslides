@@ -1,0 +1,8 @@
+- Enable PWA
+- Track user logon to log rocket
+- Ask users before tracking starts
+- Facebook Login in Prod Mode bringen
+- Google Login in Prod Mode bringen
+- Enable Sign in with Apple
+- Delete Account
+- Privacy Policy

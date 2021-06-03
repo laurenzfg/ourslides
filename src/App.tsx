@@ -30,12 +30,6 @@ const useStyles = makeStyles((theme: any) => ({
 const App = () => {
   const classes = useStyles();
 
-  useEffect(() => {
-    Auth.currentAuthenticatedUser()
-      .then(user => console.log({ user }))
-      .catch(() => console.log("Not signed in"));
-  });
-
   return (
     <div className="App">
       <CssBaseline />
