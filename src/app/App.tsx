@@ -1,7 +1,11 @@
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { AppBar, Container, CssBaseline, makeStyles, ThemeProvider, Toolbar, Typography } from '@material-ui/core';
-import SignIn from './features/auth/SignIn';
+import SignIn from '../features/auth/SignIn';
+import Spinner from '../features/components/Spinner'
+import InPresentation from '../features/in_presentation/InPresentation';
+import Dashboard from '../features/dashboard/Dashboard';
+import { Router, RouteComponentProps } from '@reach/router';
 
 // Created with material.io: https://material.io/resources/color/#!/?view.left=0&view.right=0&primary.color=283593&secondary.color=1E88E5&primary.text.color=ffffff
 const theme = createMuiTheme({
@@ -28,6 +32,13 @@ const useStyles = makeStyles((theme: any) => ({
 const App = () => {
   const classes = useStyles();
 
+  let SpinnerRoute = (props: RouteComponentProps) => <Spinner />
+  let SignInRoute = (props: RouteComponentProps) => <SignIn />
+  let InPresentationRoute = (props: RouteComponentProps) => <InPresentation />
+  let DashboardRoute = (props: RouteComponentProps) => <Dashboard />
+
+  const NotFound = (props: RouteComponentProps) => <p>Error 404: Sorry, nothing here</p>
+
   return (
     <div className="App">
       <CssBaseline />
@@ -39,12 +50,16 @@ const App = () => {
             </Typography>
           </Toolbar>
         </AppBar>
-        <main>
-          <div className={classes.appBarSpacer} />
-          <Container maxWidth="lg">
-            <SignIn />
-          </Container>
-        </main>
+        <div className={classes.appBarSpacer} />
+        <Container component="main" maxWidth="xs">
+          <Router>
+            <SpinnerRoute path="/" />
+            <SignInRoute path="/signin" />
+            <InPresentationRoute path="/presentation/*" />
+            <DashboardRoute path="/dashboard" />
+            <NotFound default />
+          </Router>
+        </Container>
       </ThemeProvider>
     </div>
   );
