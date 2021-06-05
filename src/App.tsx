@@ -1,9 +1,7 @@
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { AppBar, Container, CssBaseline, makeStyles, ThemeProvider, Toolbar, Typography } from '@material-ui/core';
-import SignIn from './Components/SignIn';
-import { useEffect } from 'react';
-import { Auth } from 'aws-amplify';
+import SignIn from './features/auth/SignIn';
 
 // Created with material.io: https://material.io/resources/color/#!/?view.left=0&view.right=0&primary.color=283593&secondary.color=1E88E5&primary.text.color=ffffff
 const theme = createMuiTheme({
