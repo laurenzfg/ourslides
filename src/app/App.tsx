@@ -2,7 +2,8 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import { AppBar, Container, CssBaseline, makeStyles, ThemeProvider, Toolbar, Typography } from '@material-ui/core';
 import SignIn from '../features/auth/SignIn';
-import Spinner from '../features/components/Spinner'
+import Spinner from '../features/components/Spinner';
+import LegalPage from '../features/components/LegalPage'
 import InPresentation from '../features/in_presentation/InPresentation';
 import Dashboard from '../features/dashboard/Dashboard';
 import { Router, RouteComponentProps, useNavigate } from '@reach/router';
@@ -57,6 +58,7 @@ const SpinnerRedirectorRoute = (props: RouteComponentProps) => {
 const SignInRoute = (props: RouteComponentProps) => <SignIn />
 const InPresentationRoute = (props: RouteComponentProps) => <InPresentation />
 const DashboardRoute = (props: RouteComponentProps) => <Dashboard />
+const LegalRoute = (props: RouteComponentProps) => <LegalPage />
 const NotFound = (props: RouteComponentProps) => <p>Error 404: Sorry, nothing here</p>
 
 const App = () => {
@@ -80,6 +82,7 @@ const App = () => {
             <SignInRoute path="/signin" />
             <InPresentationRoute path="/presentation/*" />
             <DashboardRoute path="/dashboard" />
+            <LegalRoute path="/legal" />
             <NotFound default />
           </Router>
         </Container>

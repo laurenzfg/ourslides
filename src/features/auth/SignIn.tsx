@@ -1,9 +1,10 @@
-import { Typography, Box, TextField, Button, Avatar } from '@material-ui/core'
+import { Typography, Box, TextField, Button, Avatar, CssBaseline } from '@material-ui/core'
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 import { makeStyles } from '@material-ui/core/styles';
 import { updatedAwsConfig } from '../../index'
+import { Link } from '@reach/router'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -76,6 +77,7 @@ export default function SignIn() {
         >
           Join Presentation
         </Button>
+        <Typography variant="body2" gutterBottom>By signing in, you accept the <Link to="/legal">Privacy Policy and Terms of Service</Link></Typography>    
       </form>
     </Box>
   );
