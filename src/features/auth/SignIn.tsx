@@ -3,8 +3,6 @@ import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 import { makeStyles } from '@material-ui/core/styles';
-
-import { Auth } from 'aws-amplify';
 import { updatedAwsConfig } from '../../index'
 
 const useStyles = makeStyles((theme) => ({
@@ -52,7 +50,6 @@ export default function SignIn() {
       </Typography>
       <FacebookLoginButton onClick={() => { window.location.assign(url_to_facebook) }}></FacebookLoginButton>
       <GoogleLoginButton onClick={() => { window.location.assign(url_to_google) }}></GoogleLoginButton>
-      <button onClick={() => Auth.signOut()}>Sign Out</button>
       <Avatar className={classes.avatar}>
         <LockOpenOutlinedIcon />
       </Avatar>

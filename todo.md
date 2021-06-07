@@ -6,3 +6,4 @@
 - Enable Sign in with Apple
 - Delete Account
 - Privacy Policy
+- No reload on signOut

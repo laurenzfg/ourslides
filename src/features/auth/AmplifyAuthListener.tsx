@@ -18,14 +18,13 @@ function setupListeners(store: Store) {
 async function sendUserAttrToRedux(store: Store) {
     const dispatch = store.dispatch;
 
-    let userAttributes;
     try {
       const {attributes} = await Auth.currentAuthenticatedUser();
-      userAttributes = attributes;
+      dispatch(signin(attributes));
     } catch {
-      userAttributes = {};
+      dispatch(signout());
     }
-    dispatch(signin(userAttributes));
+    
 }
 
 function signOut(store: Store) {
