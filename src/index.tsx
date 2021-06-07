@@ -1,11 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App from './app/App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
-import Amplify, { Auth, Hub } from 'aws-amplify';
+import Amplify from 'aws-amplify';
 import awsconfig from './aws-exports';
+import store from './app/store'
+import { Provider } from 'react-redux'
+import setupAuthListeners from './features/auth/AmplifyAuthListener'
 
 // Make AWS config available globally
 // Set the redirect URI for OAuth Flows according to localhost or prod deployment
@@ -42,7 +45,9 @@ export const updatedAwsConfig = {
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
@@ -50,26 +55,9 @@ ReactDOM.render(
 // Let's boot up our AWS Amplify lib
 Amplify.configure(updatedAwsConfig);
 
-async function getUserAttributes() {
-  let userAttributes;
-  try {
-    const {attributes} = await Auth.currentAuthenticatedUser();
-    userAttributes = attributes;
-  } catch {
-    userAttributes = {};
-  }
-  console.log(userAttributes);
-}
-
-// Initially load attributes
-getUserAttributes();
-
+// Listen on events
 // Update logged in state whenever something happens on the auth channel
-Hub.listen('auth', (data) => {
-  const event = data.payload.event;
-  console.log('caught auth event:', event);
-  getUserAttributes();
-});
+setupAuthListeners(store);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
