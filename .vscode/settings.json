@@ -8,5 +8,6 @@
     "amplify/backend/amplify-meta.json": true,
     "amplify/backend/awscloudformation": true
   },
-  "cSpell.enabled": false
+  "cSpell.enabled": false,
+  "editor.tabSize": 2,
 }
