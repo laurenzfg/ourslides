@@ -21,11 +21,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function InPresentation (props: InPresentationProps) {
+export default function PresentationEditor (props: InPresentationProps) {
   const classes = useStyles();
   return (
     <>
-    <p>In Presentation {props.presentationId || 'O'}</p>
+    <p>Editing Presentation {props.presentationId || 'O'}</p>
     <Button variant="contained" color="secondary" onClick={() => Auth.signOut()} className={classes.signOutButton}>Sign Out</Button>
     </>
   );

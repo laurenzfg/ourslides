@@ -1,4 +1,4 @@
-
+import React, { FunctionComponent, useEffect } from 'react'
 import { createMuiTheme } from '@material-ui/core/styles';
 import { AppBar, Container, CssBaseline, makeStyles, ThemeProvider, Toolbar, Typography } from '@material-ui/core';
 import SignIn from '../features/auth/SignIn';
@@ -6,11 +6,15 @@ import Spinner from '../features/components/Spinner';
 import LegalPage from '../features/components/LegalPage'
 import InPresentation from '../features/in_presentation/InPresentation';
 import Dashboard from '../features/dashboard/Dashboard';
-import { Router, RouteComponentProps, useNavigate } from '@reach/router';
+import AccessCodeRedirector from '../features/auth/AccessCodeRedirector';
+import { Router, RouteComponentProps, useNavigate, Link } from '@reach/router';
 import { useAppSelector } from './hooks';
 import { AuthStates } from '../features/auth/userSlice';
+import { inherits } from 'util';
+import PresentationEditor from '../features/presentation_editor/PresentationEditor';
+import NotFoundPage from '../features/components/NotFoundPage';
 
-// Created with material.io: https://material.io/resources/color/#!/?view.left=0&view.right=0&primary.color=283593&secondary.color=1E88E5&primary.text.color=ffffff
+// Created with material.io: https://material.io/resources/color/#!/?view.left=0&view.right=0&primary.color=283593&secondary.color=D32F2F&primary.text.color=ffffff
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -20,10 +24,10 @@ const theme = createMuiTheme({
       contrastText: '#fff',
     },
     secondary: {
-      light: '#6ab7ff',
-      main: '#1e88e5',
-      dark: '#005cb2',
-      contrastText: '#000',
+      light: '#ff6659',
+      main: '#d32f2f',
+      dark: '#9a0007',
+      contrastText: '#fff',
     },
   },
 });
@@ -32,12 +36,13 @@ const useStyles = makeStyles((theme: any) => ({
   appBarSpacer: theme.mixins.toolbar,
 }));
 
-const SpinnerRedirectorRoute = (props: RouteComponentProps) => {
+const HomeRedirectorRoute = (props: RouteComponentProps) => {
   const authState = useAppSelector((state) => state.user.state); // creates subscription
-
   const navigate = useNavigate();
 
-  // If user selected no route, redirect them based on auth status
+  // Asyncly redirect the user upon auth status state
+  useEffect(() => {
+    // If user selected no route, redirect them based on auth status
     switch (authState) {
       case AuthStates.UNAUTH:
         navigate("/signin");
@@ -46,20 +51,57 @@ const SpinnerRedirectorRoute = (props: RouteComponentProps) => {
         navigate("/dashboard");
         break;
       case AuthStates.ACCESSCODE:
-        // TODO
+        // Check if backend can give us the correct presentation; give them error message and sign them out
+        navigate("/presentation/42"); // STUB
         break;
       default:
         // This should mean that we are AuthStates.AWAITING
         break;
     }
+  }, [authState, navigate]);
 
   return (<Spinner />);
 }
-const SignInRoute = (props: RouteComponentProps) => <SignIn />
-const InPresentationRoute = (props: RouteComponentProps) => <InPresentation />
-const DashboardRoute = (props: RouteComponentProps) => <Dashboard />
-const LegalRoute = (props: RouteComponentProps) => <LegalPage />
-const NotFound = (props: RouteComponentProps) => <p>Error 404: Sorry, nothing here</p>
+
+// TODO We should merge these two components and have the conditions as a Higer Order Function
+const UserOnlyRoute : FunctionComponent<RouteComponentProps> = (props) => {
+  const authState = useAppSelector((state) => state.user.state); // creates subscription
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (authState !== AuthStates.USER && authState !== AuthStates.AWAITING) {
+      navigate("/"); // send user to carousel
+    }
+  }, [authState, navigate]);
+
+  if (authState !== AuthStates.USER) {
+    return (<Spinner />);
+  } else {
+    return (<>{props.children}</>);
+  }
+};
+
+const UserOrAcCodeOnlyRoute : FunctionComponent<RouteComponentProps> = (props) => {
+  const authState = useAppSelector((state) => state.user.state); // creates subscription
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (authState !== AuthStates.USER && authState !== AuthStates.ACCESSCODE && authState !== AuthStates.AWAITING) {
+      navigate("/"); // send user to carousel
+    }
+  }, [authState, navigate]);
+
+  if (authState !== AuthStates.USER && authState !== AuthStates.ACCESSCODE) {
+    return (<Spinner />);
+  } else {
+    return (<>{props.children}</>);
+  }
+};
+
+const DashboardRoute = (props: RouteComponentProps) => <Dashboard/>
+const SignInRoute = (props: RouteComponentProps) => <SignIn />;
+const LegalRoute = (props: RouteComponentProps) => <LegalPage />;
+const NotFound = (props: RouteComponentProps) => <NotFoundPage />;
 
 const App = () => {
   const classes = useStyles();
@@ -70,18 +112,28 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <AppBar position="absolute">
           <Toolbar>
-            <Typography component="h1" variant="h6" color="inherit" noWrap>
-              Ourslides
-            </Typography>
+            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Typography component="h1" variant="h6" color="inherit" noWrap>
+                Ourslides
+              </Typography>
+            </Link>
           </Toolbar>
         </AppBar>
         <div className={classes.appBarSpacer} />
         <Container component="main" maxWidth="xs">
           <Router>
-            <SpinnerRedirectorRoute path="/" />
+            <HomeRedirectorRoute path="/" />
             <SignInRoute path="/signin" />
-            <InPresentationRoute path="/presentation/*" />
-            <DashboardRoute path="/dashboard" />
+            <AccessCodeRedirector path="/accode/:accessCode" />
+            <UserOrAcCodeOnlyRoute path="/presentation">
+              <InPresentation path=":presentationId"/>
+              <NotFound default />
+            </UserOrAcCodeOnlyRoute>
+            <UserOnlyRoute path="/edit">
+              <PresentationEditor path=":presentationId" />
+              <NotFound default />
+            </UserOnlyRoute>
+            <UserOnlyRoute path="/dashboard"><DashboardRoute default /></UserOnlyRoute>
             <LegalRoute path="/legal" />
             <NotFound default />
           </Router>
