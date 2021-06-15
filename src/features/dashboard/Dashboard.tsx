@@ -31,8 +31,6 @@ export default function Dashboard() {
   const givenName = useAppSelector((state) => state.user.given_name);
   const presentations = useAppSelector(getAllPresentationsSelector);
 
-  console.log(presentations);
-
   return (
     <>
       <Typography variant="h4" component="h2" className={classes.title}>
@@ -40,7 +38,7 @@ export default function Dashboard() {
       </Typography>
 
       {Object.values(presentations).map((pres: Presentation) => {
-        return (<PresentationCard presentation={pres} />);
+        return (<PresentationCard presentation={pres} key={pres.pres_id} />);
       })}
 
       <Button
