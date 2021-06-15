@@ -1,10 +1,11 @@
+import React, { useState } from 'react'
 import { Typography, Box, TextField, Button, Avatar, CssBaseline } from '@material-ui/core'
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 import { makeStyles } from '@material-ui/core/styles';
 import { updatedAwsConfig } from '../../index'
-import { Link } from '@reach/router'
+import { Link, RouteComponentProps, useNavigate } from '@reach/router'
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -15,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.light,
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -30,8 +31,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn() {
-  const classes = useStyles();
-
   const { 
     domain,  
     redirectSignIn, 
@@ -39,7 +38,16 @@ export default function SignIn() {
   const clientId = updatedAwsConfig.aws_user_pools_web_client_id;
   
   const url_to_google = 'https://' + domain + '/oauth2/authorize?redirect_uri=' + redirectSignIn + '&response_type=' + responseType + '&client_id=' + clientId + '&identity_provider=Google';
-  const url_to_facebook = 'https://' + domain + '/oauth2/authorize?redirect_uri=' + redirectSignIn + '&response_type=' + responseType + '&client_id=' + clientId + '&identity_provider=Facebook';
+  const url_to_facebook = 'https://' + domain + '/oauth2/authorize?redirect_uri=' + redirectSignIn + '&response_type=' + responseType + '&client_id=' + clientId + '&identity_provider=Facebook';  
+
+  const classes = useStyles();
+  const navigate = useNavigate();
+  const [accode, setAccode] = useState(''); // '' is the initial state value
+
+  const accessCodeHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+    navigate("/accode/" + accode);
+  };
 
   return (
     <Box className={classes.wrapper}>
@@ -57,7 +65,7 @@ export default function SignIn() {
       <Typography component="h1" variant="h5">
         Got an access code?
       </Typography>
-      <form className={classes.form} noValidate>
+      <form className={classes.form} onSubmit={accessCodeHandler} noValidate>
         <TextField
           variant="outlined"
           margin="normal"
@@ -66,6 +74,7 @@ export default function SignIn() {
           id="accode"
           label="Access Code"
           name="accode"
+          onInput={(e: any) => { setAccode(e.target.value) }}
           autoFocus
         />
         <Button

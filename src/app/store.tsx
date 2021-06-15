@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from '../features/auth/userSlice'
+import presentationsReducer from '../features/dashboard/presentationsSlice'
 
 const store = configureStore({
   reducer: {
       user: userReducer,
+      presentations: presentationsReducer
   },
 });
 
