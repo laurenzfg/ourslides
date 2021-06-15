@@ -1,9 +1,14 @@
-import { Button, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { Auth } from 'aws-amplify';
-import React from 'react';
-import { useAppSelector } from '../../app/hooks';
-import PresentationCard from './PresentationCard';
+import { Button, Typography, Fab } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import AddIcon from "@material-ui/icons/Add";
+import { Auth } from "aws-amplify";
+import React from "react";
+import { useAppSelector } from "../../app/hooks";
+import PresentationCard from "./PresentationCard";
+import {
+  getAllPresentationsSelector,
+  Presentation,
+} from "./presentationsSlice";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -13,25 +18,46 @@ const useStyles = makeStyles((theme) => ({
   },
   signOutButton: {
     marginTop: 6,
-  }
+  },
+  newPresButton: {
+    marginTop: 6,
+    marginRight: 8,
+  },
 }));
 
-export default function Dashboard () {
+export default function Dashboard() {
   const classes = useStyles();
 
   const givenName = useAppSelector((state) => state.user.given_name);
+  const presentations = useAppSelector(getAllPresentationsSelector);
+
+  console.log(presentations);
 
   return (
     <>
       <Typography variant="h4" component="h2" className={classes.title}>
-      Let's present, {givenName}!
+        Let's present, {givenName}!
       </Typography>
 
-      <PresentationCard />
-      <PresentationCard />
-      <PresentationCard />
+      {Object.values(presentations).map((pres: Presentation) => {
+        return (<PresentationCard presentation={pres} />);
+      })}
 
-      <Button variant="contained" color="secondary" onClick={() => Auth.signOut()} className={classes.signOutButton}>Sign Out</Button>
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.newPresButton}
+      >
+        New Presentation
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => Auth.signOut()}
+        className={classes.signOutButton}
+      >
+        Sign Out
+      </Button>
     </>
   );
 }
