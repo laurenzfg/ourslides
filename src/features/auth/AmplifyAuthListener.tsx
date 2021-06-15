@@ -1,12 +1,12 @@
 import { Auth, Hub } from "aws-amplify";
 import { Store } from "redux";
-import { signin, signout } from "./userSlice"
+import { signin, SignInPayload, signout } from "./userSlice";
 
 function setupListeners(store: Store) {
-  Hub.listen('auth', (data) => {
+  Hub.listen("auth", (data) => {
     const event = data.payload.event;
-    console.log('caught auth event:', event);
-    if (data.payload.event === 'signOut') {
+    console.log("caught auth event:", event);
+    if (data.payload.event === "signOut") {
       signOut(store);
     }
     sendUserAttrToRedux(store);
@@ -16,21 +16,25 @@ function setupListeners(store: Store) {
 }
 
 async function sendUserAttrToRedux(store: Store) {
-    const dispatch = store.dispatch;
+  const dispatch = store.dispatch;
 
-    try {
-      const {attributes} = await Auth.currentAuthenticatedUser();
-      dispatch(signin(attributes));
-    } catch {
-      dispatch(signout());
-    }
-    
+  try {
+    const { attributes, signInUserSession } =
+      await Auth.currentAuthenticatedUser();
+    let signInPayload: SignInPayload = {
+      ...attributes,
+      id_token: signInUserSession.idToken.jwtToken,
+    };
+    dispatch(signin(signInPayload));
+  } catch {
+    dispatch(signout());
+  }
 }
 
 function signOut(store: Store) {
-    const dispatch = store.dispatch;
+  const dispatch = store.dispatch;
 
-    dispatch(signout());
+  dispatch(signout());
 }
-  
+
 export default setupListeners;

@@ -1,39 +1,42 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Different Auth States
 enum AuthStates {
   AWAITING, // special status at the beginning of the lifecycle when we have no info from AWS Cognito
   UNAUTH,
   USER,
-  ACCESSCODE
+  ACCESSCODE,
 }
 
 // Define a type for the slice state
 interface AuthState {
-  state: AuthStates,
-  name: string, // iff USER contains the name of user, iff ACCESSCODE the access code
-  given_name: string,
-  email: string,
-  sub: string,
+  state: AuthStates;
+  name: string; // iff USER contains the name of user, iff ACCESSCODE the access code
+  given_name: string;
+  email: string;
+  sub: string;
+  id_token: string;
 }
 
-interface SignInPayload {
-  name: string,
-  given_name: string,
-  email: string,
-  sub: string,
+export interface SignInPayload {
+  name: string;
+  given_name: string;
+  email: string;
+  sub: string;
+  id_token: string;
 }
 
-const initialState : AuthState = {
+const initialState: AuthState = {
   state: AuthStates.AWAITING,
   name: "",
   given_name: "",
   email: "",
   sub: "",
-}
+  id_token: "",
+};
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState: initialState,
   reducers: {
     signout: (state) => {
@@ -46,6 +49,7 @@ export const userSlice = createSlice({
       state.given_name = "";
       state.email = "";
       state.sub = "";
+      state.id_token = "";
     },
     signin: (state, action: PayloadAction<SignInPayload>) => {
       state.state = AuthStates.USER;
@@ -53,19 +57,21 @@ export const userSlice = createSlice({
       state.given_name = action.payload.given_name;
       state.email = action.payload.email;
       state.sub = action.payload.sub;
+      state.id_token = action.payload.id_token;
     },
     signInAccesscode: (state, action: PayloadAction<string>) => {
       state.state = AuthStates.ACCESSCODE;
       state.name = action.payload;
       state.given_name = "";
       state.email = "";
+      state.id_token = "";
       state.sub = "";
-    }
+    },
   },
-})
+});
 
 // Action creators are generated for each case reducer function
 const { signin, signout, signInAccesscode } = userSlice.actions;
-export { AuthStates, signin, signout, signInAccesscode }
+export { AuthStates, signin, signout, signInAccesscode };
 
 export default userSlice.reducer;
